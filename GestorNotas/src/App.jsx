@@ -71,11 +71,6 @@ function App() {
           <NoteEditor note={selectedNote} onChange={updateNote} />
         </div>
       </div>
-      <footer className="mt-3 text-center">
-        <button className="btn btn-danger btn-sm" onClick={clearAllNotes}>
-          <i className="bi bi-trash"></i> Clear All Notes
-        </button>
-      </footer>
 
     </div>
   )
