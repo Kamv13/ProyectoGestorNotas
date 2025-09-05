@@ -32,8 +32,8 @@ function App() {
 
   async function clearAllNotes() {
     const result = await Swal.fire({
-      title: 'Clear all notes?',
-      text: 'This will permanently delete all your notes.',
+      title: 'Desea eliminar todas las notas?',
+      text: 'Esto eliminara todas las notas.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
