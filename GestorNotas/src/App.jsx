@@ -73,7 +73,7 @@ function App() {
       </div>
       <footer className="mt-3 text-center">
         <button className="btn btn-danger btn-sm" onClick={clearAllNotes}>
-          <i className="bi bi-trash"></i> Clear All Notes
+          <i className="bi bi-trash"></i> Limpiar todas las notas
         </button>
       </footer>
 
