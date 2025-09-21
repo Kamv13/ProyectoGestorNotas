@@ -4,12 +4,23 @@ import NoteEditor from './Components/NoteEditor.jsx'
 import { useLocalStorage } from './Hooks/useLocalStorage.js'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import SearchBar from './Components/searchbar.jsx'
+
+
 
 function App() {
   const [notes, setNotes] = useLocalStorage('gn-notes-v1', [])
   const [selectedId, setSelectedId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
 
   const selectedNote = notes.find(n => n.id === selectedId) || null
+
+   
+  const filteredNotes = notes.filter(note =>
+  note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  note.content.toLowerCase().includes(searchQuery.toLowerCase())
+)
 
   function createNote() {
     const newNote = {
@@ -60,9 +71,10 @@ async function deleteNote(id) {
     <div className="app-shell container-fluid">
       <div className="row g-3">
         <div className="col-auto">
+          <SearchBar query={searchQuery} onChange={setSearchQuery} />
           <Sidebar
             onNew={createNote}
-            notes={notes}
+            notes={filteredNotes}
             selectedId={selectedId}
             onSelect={setSelectedId}
           />
