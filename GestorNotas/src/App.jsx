@@ -30,30 +30,30 @@ function App() {
     )
   }
 
-  async function clearAllNotes() {
-    const result = await Swal.fire({
-      title: 'Desea eliminar todas las notas?',
-      text: 'Esto eliminara todas las notas.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Si, Eliminar todas',
-      cancelButtonText: 'Cancel'
-    })
+async function deleteNote(id) {
+  const result = await Swal.fire({
+    title: '¿Eliminar esta nota?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  })
 
-    if (result.isConfirmed) {
-      setNotes([])
-      setSelectedId(null)
-      Swal.fire({
-        title: 'Deleted!',
-        text: 'Todas las notas han sido eliminadas.',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false
-      })
-    }
+  if (result.isConfirmed) {
+    setNotes(prev => prev.filter(n => n.id !== id))
+    setSelectedId(null)
+    Swal.fire({
+      title: 'Eliminada',
+      text: 'La nota ha sido eliminada.',
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false
+    })
   }
+}
 
 
   return (
@@ -68,13 +68,16 @@ function App() {
           />
         </div>
         <div className="col">
-          <NoteEditor note={selectedNote} onChange={updateNote} />
+          <NoteEditor
+           note={selectedNote}
+           onChange={updateNote}
+           onDelete={() => deleteNote(selectedId)}
+           />
         </div>
       </div>
+      
       <footer className="mt-3 text-center">
-        <button className="btn btn-danger btn-sm" onClick={clearAllNotes}>
-          <i className="bi bi-trash"></i> Limpiar todas las notas
-        </button>
+      
       </footer>
 
     </div>
