@@ -4,12 +4,23 @@ import NoteEditor from './Components/NoteEditor.jsx'
 import { useLocalStorage } from './Hooks/useLocalStorage.js'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import SearchBar from './Components/searchbar.jsx'
+
+
 
 function App() {
   const [notes, setNotes] = useLocalStorage('gn-notes-v1', [])
   const [selectedId, setSelectedId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
 
   const selectedNote = notes.find(n => n.id === selectedId) || null
+
+   
+  const filteredNotes = notes.filter(note =>
+  note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  note.content.toLowerCase().includes(searchQuery.toLowerCase())
+)
 
   function createNote() {
     const newNote = {
@@ -30,51 +41,55 @@ function App() {
     )
   }
 
-  async function clearAllNotes() {
-    const result = await Swal.fire({
-      title: 'Desea eliminar todas las notas?',
-      text: 'Esto eliminara todas las notas.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Si, Eliminar todas',
-      cancelButtonText: 'Cancel'
-    })
+async function deleteNote(id) {
+  const result = await Swal.fire({
+    title: '¿Eliminar esta nota?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  })
 
-    if (result.isConfirmed) {
-      setNotes([])
-      setSelectedId(null)
-      Swal.fire({
-        title: 'Deleted!',
-        text: 'Todas las notas han sido eliminadas.',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false
-      })
-    }
+  if (result.isConfirmed) {
+    setNotes(prev => prev.filter(n => n.id !== id))
+    setSelectedId(null)
+    Swal.fire({
+      title: 'Eliminada',
+      text: 'La nota ha sido eliminada.',
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false
+    })
   }
+}
 
 
   return (
     <div className="app-shell container-fluid">
       <div className="row g-3">
         <div className="col-auto">
+          <SearchBar query={searchQuery} onChange={setSearchQuery} />
           <Sidebar
             onNew={createNote}
-            notes={notes}
+            notes={filteredNotes}
             selectedId={selectedId}
             onSelect={setSelectedId}
           />
         </div>
         <div className="col">
-          <NoteEditor note={selectedNote} onChange={updateNote} />
+          <NoteEditor
+           note={selectedNote}
+           onChange={updateNote}
+           onDelete={() => deleteNote(selectedId)}
+           />
         </div>
       </div>
+      
       <footer className="mt-3 text-center">
-        <button className="btn btn-danger btn-sm" onClick={clearAllNotes}>
-          <i className="bi bi-trash"></i> Limpiar todas las notas
-        </button>
+      
       </footer>
 
     </div>
